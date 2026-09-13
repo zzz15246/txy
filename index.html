@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>生日快乐 田香雨</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
+    }
+
+    body {
+        overflow: hidden;
+        background: #fdf2f7;
+        color: #222;
+        height: 100vh;
+    }
+
+    .page {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .page.active {
+        display: flex;
+    }
+
+    /* 开场页烟花画布 */
+    #fireCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* ========== 开场页 ========== */
+    #page1 {
+        background: linear-gradient(180deg, #fef4f9 0%, #fce4ef 100%);
+        cursor: pointer;
+        transition: background 0.4s ease;
+    }
+
+    #page1:hover {
+        background: linear-gradient(180deg, #fef0f7 0%, #fadbe8 100%);
+    }
+
+    .start-english {
+        font-size: 15px;
+        letter-spacing: 8px;
+        color: #d86b8f;
+        margin-bottom: 20px;
+        font-weight: 300;
+        opacity: 0.85;
+        z-index: 2;
+    }
+
+    .start-number {
+        font-size: 230px;
+        font-weight: 900;
+        color: #ffffff;
+        line-height: 1;
+        text-shadow: 0 12px 34px rgba(255, 100, 150, 0.45),
+                     0 0 24px rgba(255, 255, 255, 0.6);
+        letter-spacing: 10px;
+        z-index: 2;
+    }
+
+    .start-subtitle {
+        margin-top: 26px;
+        font-size: 20px;
+        color: #222;
+        letter-spacing: 2px;
+        opacity: 0.9;
+        z-index: 2;
+    }
+
+    .start-subtitle .keyword {
+        color: #ff4d79;
+        font-weight: bold;
+    }
+
+    .start-hint {
+        margin-top: 42px;
+        font-size: 13px;
+        color: #555;
+        opacity: 0.75;
+        letter-spacing: 3px;
+        z-index: 2;
+    }
+
+    .start-wishes {
+        margin-top: 24px;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .start-wishes p {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.9;
+        letter-spacing: 1px;
+    }
+
+    .start-wishes .en {
+        font-size: 13px;
+        color: #ff4d79;
+        margin-top: 8px;
+        letter-spacing: 2px;
+    }
+
+    /* ========== 礼物页 ========== */
+    #page2 {
+        background: linear-gradient(135deg, #fef4f9 0%, #fcdceb 100%);
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 40px;
+        padding: 60px;
+    }
+
+    .gift-left {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        text-align: left;
+    }
+
+    .gift-title-line1 {
+        font-size: 72px;
+        font-weight: 900;
+        color: #222;
+        line-height: 1.1;
+    }
+
+    .gift-title-line1 .keyword {
+        color: #ff4d79;
+    }
+
+    .gift-title-line2 {
+        font-size: 72px;
+        font-weight: 900;
+        color: #ff4d79;
+        line-height: 1.1;
+    }
+
+    .gift-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .gift-number {
+        font-size: 260px;
+        font-weight: 900;
+        color: #ffffff;
+        line-height: 1;
+        text-shadow: 0 12px 40px rgba(255, 100, 150, 0.45),
+                     0 0 24px rgba(255, 255, 255, 0.6);
+        letter-spacing: 10px;
+    }
+
+    #openGiftBtn {
+        padding: 16px 42px;
+        font-size: 20px;
+        border: none;
+        border-radius: 99px;
+        background: #ff4d79;
+        color: #fff;
+        cursor: pointer;
+        letter-spacing: 4px;
+        box-shadow: 0 10px 24px rgba(255, 100, 150, 0.35);
+        transition: 0.3s;
+    }
+
+    #openGiftBtn:hover {
+        transform: scale(1.06);
+        background: #ff3366;
+    }
+
+    /* ========== 照片墙页 ========== */
+    #page3 {
+        background: #fef4f9;
+        overflow: auto;
+    }
+
+    .photo-title {
+        font-size: 28px;
+        margin-bottom: 16px;
+        color: #222;
+    }
+
+    .photo-title .keyword {
+        color: #ff4d79;
+    }
+
+    .upload-area {
+        margin-bottom: 20px;
+        color: #555;
+        text-align: center;
+    }
+
+    .heart-wall {
+        position: relative;
+        width: 900px;
+        height: 620px;
+        margin: 0 auto 24px;
+    }
+
+    .heart-item {
+        position: absolute;
+        width: 82px;
+        height: 82px;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(255, 100, 150, 0.22);
+        transition: 0.35s ease;
+        border: 3px solid #fff;
+    }
+
+    .heart-item:hover {
+        transform: scale(1.14);
+        z-index: 10;
+    }
+
+    .heart-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .next-page3 {
+        margin-top: 10px;
+        padding: 12px 30px;
+        border-radius: 30px;
+        background: #ff4d79;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    /* ========== 蛋糕页 ========== */
+    #page4 {
+        background: linear-gradient(180deg, #fef4f9 0%, #fcdceb 100%);
+    }
+
+    .cake-scene {
+        position: relative;
+        width: 340px;
+        height: 400px;
+        margin-bottom: 20px;
+    }
+
+    .cake-box {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        transform: translateX(-50%);
+        width: 320px;
+        height: 340px;
+    }
+
+    .cake-layer {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 50% 50% 0 0;
+        background: #f8c8dc;
+    }
+
+    .layer1 {
+        width: 320px;
+        height: 110px;
+        bottom: 0;
+        background: #f5b8ce;
+    }
+
+    .layer2 {
+        width: 240px;
+        height: 100px;
+        bottom: 100px;
+        background: #f8c8dc;
+    }
+
+    .layer3 {
+        width: 160px;
+        height: 90px;
+        bottom: 190px;
+        background: #ffe6ef;
+    }
+
+    .cake-decoration {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        z-index: 2;
+    }
+
+    .deco-cherry {
+        top: 175px;
+        left: 30%;
+        font-size: 20px;
+    }
+
+    .deco-cherry-2 {
+        top: 175px;
+        left: 70%;
+        font-size: 20px;
+    }
+
+    .deco-star {
+        top: 70px;
+        left: 50%;
+        font-size: 28px;
+        color: #ffd400;
+    }
+
+    .deco-heart {
+        top: 240px;
+        left: 20%;
+        font-size: 20px;
+        color: #ff4d79;
+    }
+
+    .deco-heart-2 {
+        top: 240px;
+        left: 80%;
+        font-size: 20px;
+        color: #ff4d79;
+    }
+
+    .deco-sparkle {
+        top: 120px;
+        left: 15%;
+        font-size: 18px;
+        color: #ffffff;
+    }
+
+    .deco-sparkle-2 {
+        top: 120px;
+        left: 85%;
+        font-size: 18px;
+        color: #ffffff;
+    }
+
+    .candle {
+        position: absolute;
+        bottom: 275px;
+        width: 6px;
+        height: 32px;
+        background: #fff;
+    }
+
+    .flame {
+        width: 10px;
+        height: 16px;
+        background: radial-gradient(#ffdd00, #ff6622);
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        position: absolute;
+        top: -14px;
+        left: -2px;
+        animation: flame 0.4s infinite alternate;
+    }
+
+    @keyframes flame {
+        0% {
+            transform: scaleY(1);
+            opacity: 0.9;
+        }
+        100% {
+            transform: scaleY(1.15);
+            opacity: 1;
+        }
+    }
+
+    .flame.out {
+        display: none;
+    }
+
+    .wish-text {
+        font-size: 22px;
+        margin: 20px 0;
+        text-align: center;
+        line-height: 1.7;
+        color: #222;
+    }
+
+    .wish-text .keyword {
+        color: #ff4d79;
+        font-weight: bold;
+    }
+
+    .wish-en {
+        font-size: 14px;
+        color: #ff4d79;
+        letter-spacing: 2px;
+        margin-top: 4px;
+    }
+
+    #wishBtn {
+        padding: 12px 32px;
+        border: none;
+        border-radius: 30px;
+        background: #ff4d79;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    /* ========== 祝福+星星页 ========== */
+    #page5 {
+        background: linear-gradient(180deg, #fef4f9 0%, #ffd1e8 100%);
+    }
+
+    .bless-text {
+        font-size: 24px;
+        text-align: center;
+        line-height: 2;
+        color: #222;
+        padding: 0 20px;
+        max-width: 700px;
+    }
+
+    .bless-text .keyword {
+        color: #ff4d79;
+        font-weight: bold;
+    }
+
+    .star-info {
+        margin: 30px 0;
+        font-size: 20px;
+        color: #222;
+    }
+
+    .star-info .keyword {
+        color: #ff4d79;
+        font-weight: bold;
+    }
+
+    .star-area {
+        width: 100%;
+        height: 300px;
+        position: relative;
+    }
+
+    .star {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        cursor: pointer;
+        background: #ffd400;
+        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        transition: 0.2s;
+    }
+
+    .star:hover {
+        transform: scale(1.2);
+    }
+
+    .star.collected {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    #gameNext {
+        margin-top: 20px;
+        padding: 12px 28px;
+        border-radius: 30px;
+        background: #ff4d79;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        display: none;
+    }
+
+    /* ========== 视频页 ========== */
+    #page6 {
+        background: #fef4f9;
+        justify-content: center;
+        padding: 30px 20px 40px;
+    }
+
+    .video-title {
+        font-size: 26px;
+        margin-bottom: 18px;
+        color: #222;
+    }
+
+    .video-title .keyword {
+        color: #ff4d79;
+    }
+
+    .video-box {
+        max-width: 420px;
+        width: 90%;
+    }
+
+    #myVideo {
+        width: 100%;
+        max-height: 50vh;
+        border-radius: 12px;
+    }
+
+    .next-page6 {
+        margin-top: 22px;
+        padding: 10px 26px;
+        border-radius: 30px;
+        background: #ff4d79;
+        border: none;
+        color: #fff;
+        font-size: 17px;
+        cursor: pointer;
+    }
+
+    /* ========== 祝福墙页 ========== */
+    #page7 {
+        background: linear-gradient(180deg, #fef4f9 0%, #ffd1e8 100%);
+    }
+
+    .sign-title {
+        font-size: 26px;
+        margin-bottom: 16px;
+        color: #222;
+    }
+
+    .sign-title .keyword {
+        color: #ff4d79;
+    }
+
+    .sign-wall {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        width: 400px;
+        height: 480px;
+    }
+
+    .sign-cell {
+        border: 1px solid rgba(255, 77, 121, 0.45);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #222;
+        min-height: 40px;
+    }
+    .next-page7{
+        margin-top:24px;
+        padding:10px 26px;
+        border-radius:30px;
+        background:#ff4d79;
+        border:none;
+        color:#fff;
+        font-size:17px;
+        cursor:pointer;
+    }
+
+    /* ========== 密码祝福页 ========== */
+    #page8 {
+        background: linear-gradient(180deg, #fef4f9 0%, #ffd1e8 100%);
+        justify-content: center;
+        padding: 30px 20px 40px;
+    }
+
+    .final-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #222;
+        text-align: center;
+    }
+
+    .final-title .keyword {
+        color: #ff4d79;
+        font-weight: bold;
+    }
+
+    .final-question {
+        font-size: 20px;
+        margin-bottom: 16px;
+        color: #222;
+        text-align: center;
+    }
+
+    .final-input {
+        width: 260px;
+        height: 44px;
+        border-radius: 24px;
+        border: 1px solid #ff4d79;
+        padding: 0 16px;
+        font-size: 16px;
+        text-align: center;
+        outline: none;
+        margin-bottom: 16px;
+    }
+
+    .final-btn {
+        padding: 12px 30px;
+        border-radius: 30px;
+        background: #ff4d79;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .final-result {
+        max-width: 420px;
+        width: 90%;
+        padding: 20px;
+        border-radius: 16px;
+        background: rgba(255, 77, 121, 0.08);
+        border: 1px solid rgba(255, 77, 121, 0.3);
+        color: #222;
+        font-size: 16px;
+        line-height: 1.9;
+        text-align: center;
+        display: none;
+    }
+
+    .final-result .keyword {
+        color: #ff4d79;
+        font-weight: bold;
+    }
+
+    .final-error {
+        color: #ff4d79;
+        font-size: 16px;
+        margin-top: 10px;
+        display: none;
+    }
+</style>
+</head>
+
+<body>
+<canvas id="fireCanvas"></canvas>
+
+<!-- 第1页：开场烟花页 -->
+<div class="page active" id="page1">
+    <div class="start-english">FOR TIANXIANGYU</div>
+    <div class="start-number">20</div>
+    <div class="start-subtitle"><span class="keyword">今天</span>，宇宙为你亮了一下</div>
+    <div class="start-hint">点击任意位置开启烟花</div>
+    <div class="start-wishes">
+        <p>愿你岁岁平安，年年欢喜<br>愿你眼里有光，心中有爱</p>
+        <p class="en">Happy Birthday · Wish You All The Best</p>
+    </div>
+</div>
+
+<!-- 第2页：礼物页 -->
+<div class="page" id="page2">
+    <div class="gift-left">
+        <div class="gift-title-line1"><span class="keyword">田香雨</span>，</div>
+        <div class="gift-title-line2">生日快乐</div>
+    </div>
+    <div class="gift-right">
+        <div class="gift-number">20</div>
+        <button id="openGiftBtn">打开这份礼物</button>
+    </div>
+</div>
+
+<!-- 第3页：闪闪发光的日子 -->
+<div class="page" id="page3">
+    <div class="photo-title"><span class="keyword">闪闪发光</span>的日子</div>
+    <div class="upload-area">
+        <p>回忆里的每一刻，都值得被收藏</p>
+    </div>
+    <div class="heart-wall" id="heartWall"></div>
+    <button class="next-page3" onclick="switchPage('page4')">下一页🎂</button>
+</div>
+
+<!-- 第4页：三层蛋糕 20根蜡烛 -->
+<div class="page" id="page4">
+    <div class="cake-scene">
+        <div class="cake-box" id="cakeBox">
+            <div class="cake-layer layer1"></div>
+            <div class="cake-layer layer2"></div>
+            <div class="cake-layer layer3"></div>
+        </div>
+        <div class="cake-decoration deco-star">⭐</div>
+        <div class="cake-decoration deco-cherry">🍒</div>
+        <div class="cake-decoration deco-cherry-2">🍒</div>
+        <div class="cake-decoration deco-heart">💗</div>
+        <div class="cake-decoration deco-heart-2">💗</div>
+        <div class="cake-decoration deco-sparkle">✨</div>
+        <div class="cake-decoration deco-sparkle-2">✨</div>
+    </div>
+    <div class="wish-text"><span class="keyword">田香雨</span>，闭上眼睛许愿吧！</div>
+    <div class="wish-en">Close your eyes and make a wish.</div>
+    <button id="wishBtn">我许完了 ✨</button>
+</div>
+
+<!-- 第5页：祝福文字 + 收集20颗星星 -->
+<div class="page" id="page5">
+    <div class="bless-text">祝你有<span class="keyword">健康的身体</span>，<span class="keyword">良好的睡眠</span>和<span class="keyword">前进的勇气</span>。<br>祝你快乐，不止生日。</div>
+    <div class="star-info"><span class="keyword">星星</span>：<span id="starCount">0</span>/20</div>
+    <div class="star-area" id="starArea"></div>
+    <button id="gameNext" onclick="switchPage('page6')">前往视频页</button>
+</div>
+
+<!-- 第6页：美丽的瞬间 -->
+<div class="page" id="page6">
+    <div class="video-title"><span class="keyword">美丽的</span>瞬间</div>
+    <div class="video-box">
+        <video id="myVideo" controls>
+            <source src="mv.mp4" type="video/mp4">
+            浏览器不支持视频播放
+        </video>
+    </div>
+    <button class="next-page6" onclick="switchPage('page7')">前往祝福墙</button>
+</div>
+
+<!-- 第7页：40个祝福语格子【新增跳转按钮】 -->
+<div class="page" id="page7">
+    <div class="sign-title"><span class="keyword">生日祝福墙</span></div>
+    <div class="sign-wall" id="signWall"></div>
+    <button class="next-page7" onclick="switchPage('page8')">前往惊喜密码页</button>
+</div>
+
+<!-- 第8页：密码祝福页 -->
+<div class="page" id="page8">
+    <div class="final-title"><span class="keyword">生日快乐，田妹</span></div>
+    <div class="final-question">今年最幸福的一天是</div>
+    <input type="text" id="finalInput" class="final-input" placeholder="请输入答案">
+    <button class="final-btn" onclick="checkFinalAnswer()">确认</button>
+    <div class="final-result" id="finalResult"></div>
+    <div class="final-error" id="finalError">答案错误，请再试一次。</div>
+</div>
+
+<script>
+// ========== 开场页烟花：只在第一页使用，只播放一次 ==========
+const canvas = document.getElementById('fireCanvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+let animationId = null;
+let fireworks = [];
+let particles = [];
+let fireworkRunning = false;
+let fireTimer = null;
+let hasFireworkFired = false;
+
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+
+resize();
+window.addEventListener('resize', resize);
+
+const fireworkPalettes = [
+    { main: 'hsl(350, 100%, 72%)', glow: 'hsl(350, 100%, 82%)' },
+    { main: 'hsl(280, 100%, 78%)', glow: 'hsl(280, 100%, 88%)' },
+    { main: 'hsl(200, 100%, 74%)', glow: 'hsl(200, 100%, 84%)' },
+    { main: 'hsl(45, 100%, 70%)', glow: 'hsl(45, 100%, 80%)' },
+    { main: 'hsl(320, 100%, 74%)', glow: 'hsl(320, 100%, 84%)' },
+    { main: 'hsl(180, 100%, 72%)', glow: 'hsl(180, 100%, 82%)' }
+];
+
+class Firework {
+    constructor(x, y, tx, ty, palette) {
+        this.x = x;
+        this.y = y;
+        this.tx = tx;
+        this.ty = ty;
+        this.speed = 6;
+        this.angle = Math.atan2(ty - y, tx - x);
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+        this.alive = true;
+        this.palette = palette;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (Math.hypot(this.x - this.tx, this.y - this.ty) < 12) {
+            this.alive = false;
+            for (let i = 0; i < 40; i++) {
+                const ang = (Math.PI * 2 / 40) * i;
+                particles.push({
+                    x: this.x,
+                    y: this.y,
+                    vx: Math.cos(ang) * (2 + Math.random() * 2),
+                    vy: Math.sin(ang) * (2 + Math.random() * 2),
+                    alpha: 1,
+                    color: Math.random() < 0.5 ? this.palette.main : this.palette.glow
+                });
+            }
+        }
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+    }
+}
+
+function loop() {
+    if (!fireworkRunning) return;
+
+    ctx.fillStyle = 'rgba(254, 244, 249, 0.14)';
+    ctx.fillRect(0, 0, w, h);
+
+    for (let i = fireworks.length - 1; i >= 0; i--) {
+        fireworks[i].update();
+        fireworks[i].draw();
+        if (!fireworks[i].alive) fireworks.splice(i, 1);
+    }
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04;
+        p.alpha -= 0.018;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = p.color.replace(')', `, ${p.alpha})`).replace('hsl', 'hsla');
+        ctx.fill();
+
+        if (p.alpha <= 0) particles.splice(i, 1);
+    }
+
+    animationId = requestAnimationFrame(loop);
+}
+
+function stopFirework() {
+    fireworkRunning = false;
+    if (animationId) cancelAnimationFrame(animationId);
+    if (fireTimer) clearInterval(fireTimer);
+    fireTimer = null;
+    fireworks = [];
+    particles = [];
+    ctx.clearRect(0, 0, w, h);
+    canvas.style.display = 'none';
+}
+
+function launchFire(x, y) {
+    const palette = fireworkPalettes[Math.floor(Math.random() * fireworkPalettes.length)];
+    fireworks.push(new Firework(w / 2, h, x, y, palette));
+}
+
+function startShowFire() {
+    if (fireworkRunning || hasFireworkFired) return;
+    hasFireworkFired = true;
+    fireworkRunning = true;
+    canvas.style.display = 'block';
+    loop();
+
+    let count = 0;
+    const total = 10;
+    fireTimer = setInterval(() => {
+        const tx = Math.random() * w * 0.6 + w * 0.2;
+        const ty = Math.random() * h * 0.3 + h * 0.1;
+        launchFire(tx, ty);
+        count++;
+
+        if (count >= total) {
+            clearInterval(fireTimer);
+            fireTimer = null;
+            setTimeout(() => {
+                stopFirework();
+                switchPage('page2');
+            }, 2400);
+        }
+    }, 650);
+}
+
+// ========== 页面切换 ==========
+function switchPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    if (id === 'page4') createCandle();
+    if (id === 'page5') createStars();
+    if (id === 'page7') initSignWall();
+    if (id === 'page6') {
+        const video = document.getElementById('myVideo');
+        video.load();
+    }
+}
+
+// 第1页点击播放烟花
+document.getElementById('page1').addEventListener('click', function () {
+    startShowFire();
+});
+
+// 第2页按钮
+document.getElementById('openGiftBtn').addEventListener('click', function () {
+    switchPage('page3');
+});
+
+// ========== 照片墙 ==========
+const heartWall = document.getElementById('heartWall');
+const photoUrls = [
+    "images/p1.jpg",
+    "images/p2.jpg",
+    "images/p3.jpg",
+    "images/p4.jpg",
+    "images/p5.jpg",
+    "images/p6.jpg",
+    "images/p7.jpg",
+    "images/p8.jpg",
+    "images/p9.jpg",
+    "images/p10.jpg",
+    "images/p11.jpg",
+    "images/p12.jpg",
+    "images/p13.jpg",
+    "images/p14.jpg",
+    "images/p15.jpg",
+    "images/p16.jpg",
+    "images/p17.jpg",
+    "images/p18.jpg",
+    "images/p19.jpg",
+    "images/p20.jpg",
+    "images/p21.jpg",
+    "images/p22.jpg",
+    "images/p23.jpg",
+    "images/p24.jpg",
+    "images/p25.jpg",
+    "images/p26.jpg",
+    "images/p27.jpg",
+    "images/p28.jpg",
+    "images/p29.jpg",
+    "images/p30.jpg",
+    "images/p31.jpg",
+    "images/p32.jpg",
+    "images/p33.jpg",
+    "images/p34.jpg",
+    "images/p35.jpg",
+    "images/p36.jpg",
+    "images/p37.jpg",
+    "images/p38.jpg",
+    "images/p39.jpg",
+    "images/p40.jpg",
+    "images/p41.jpg",
+    "images/p42.jpg",
+    "images/p43.jpg",
+    "images/p44.jpg",
+    "images/p45.jpg",
+    "images/p46.jpg",
+    "images/p47.jpg",
+    "images/p48.jpg",
+    "images/p49.jpg",
+    "images/p50.jpg",
+    "images/p51.jpg",
+    "images/p52.jpg"
+];
+
+window.onload = function () {
+    heartWall.innerHTML = '';
+    photoUrls.forEach((src, index) => {
+        const div = document.createElement('div');
+        div.className = 'heart-item';
+        div.innerHTML = `<img src="${src}">`;
+        heartWall.appendChild(div);
+
+        if (heartWall.children.length === photoUrls.length) {
+            layoutHeartWall();
+        }
+    });
+};
+
+function layoutHeartWall() {
+    const items = heartWall.querySelectorAll('.heart-item');
+    const positions = getHeartPositions(items.length);
+
+    items.forEach((item, i) => {
+        if (positions[i]) {
+            item.style.left = positions[i].x + 'px';
+            item.style.top = positions[i].y + 'px';
+            item.style.opacity = '0';
+            item.style.transform = 'scale(0.6)';
+
+            setTimeout(() => {
+                item.style.transition = 'all 0.6s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'scale(1)';
+            }, i * 60);
+        }
+    });
+}
+
+function getHeartPositions(count) {
+    const positions = [];
+    const cx = 450;
+    const cy = 320;
+    const totalPoints = count;
+
+    for (let i = 0; i < totalPoints; i++) {
+        const t = (Math.PI * 2 / totalPoints) * i;
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        const scale = 14;
+
+        positions.push({
+            x: cx + x * scale - 41,
+            y: cy + y * scale - 41
+        });
+    }
+
+    return positions;
+}
+
+// ========== 蛋糕20根蜡烛 ==========
+function createCandle() {
+    const cakeBox = document.getElementById('cakeBox');
+    cakeBox.querySelectorAll('.candle').forEach(c => c.remove());
+
+    const candleNum = 20;
+    const r = 70;
+    const cx = 160;
+    const cy = 275;
+
+    for (let i = 0; i < candleNum; i++) {
+        const angle = (Math.PI * 2 / candleNum) * i;
+        const x = cx + Math.cos(angle) * r;
+        const candle = document.createElement('div');
+        candle.className = 'candle';
+        candle.style.left = `${x}px`;
+        candle.style.bottom = `${cy}px`;
+        candle.innerHTML = `<div class="flame"></div>`;
+        cakeBox.appendChild(candle);
+    }
+}
+
+document.getElementById('wishBtn').onclick = function () {
+    document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
+    setTimeout(() => switchPage('page5'), 1200);
+};
+
+// ========== 收集20颗星星 ==========
+let collected = 0;
+
+function createStars() {
+    collected = 0;
+    document.getElementById('starCount').innerText = collected;
+    document.getElementById('gameNext').style.display = 'none';
+
+    const area = document.getElementById('starArea');
+    area.innerHTML = '';
+
+    for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 90 + 5}%`;
+        star.style.top = `${Math.random() * 80 + 5}%`;
+
+        star.onclick = function () {
+            if (star.classList.contains('collected')) return;
+            star.classList.add('collected');
+            collected++;
+            document.getElementById('starCount').innerText = collected;
+
+            if (collected >= 20) {
+                document.getElementById('gameNext').style.display = 'block';
+            }
+        };
+
+        area.appendChild(star);
+    }
+}
+
+// ========== 祝福墙：40个祝福语 ==========
+function initSignWall() {
+    const wall = document.getElementById('signWall');
+    wall.innerHTML = '';
+
+    const wishes = [
+        "身体健康", "天天开心", "财富自由", "心想事成", "平安喜乐",
+        "万事胜意", "暴富暴美", "好运连连", "被爱包围", "笑容常在",
+        "工作顺利", "学业进步", "睡眠良好", "吃嘛嘛香", "自由如风",
+        "温柔善良", "勇敢坚定", "眼里有光", "心中有爱", "岁岁欢喜",
+        "年年暴富", "好运爆棚", "福气满满", "快乐无忧", "梦想成真",
+        "前程似锦", "一帆风顺", "幸福常伴", "烦恼清零", "好运常在",
+        "身体健康", "天天开心", "财富自由", "心想事成", "平安喜乐",
+        "万事胜意", "暴富暴美", "好运连连", "被爱包围", "笑容常在"
+    ];
+
+    const shape20 = [
+        1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+        0, 0, 1, 0, 0, 0, 1, 0, 0, 1,
+        0, 1, 0, 0, 0, 0, 1, 0, 0, 1,
+        1, 1, 1, 0, 0, 0, 1, 1, 1, 1
+    ];
+
+    let wishIndex = 0;
+
+    for (let i = 0; i < 40; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'sign-cell';
+
+        if (shape20[i]) {
+            cell.style.borderColor = '#ff4d79';
+            cell.style.background = 'rgba(255, 77, 121, 0.08)';
+            cell.innerText = wishes[wishIndex];
+            wishIndex++;
+        } else {
+            cell.style.visibility = 'hidden';
+        }
+
+        wall.appendChild(cell);
+    }
+}
+
+// ========== 最后一页：密码答案校验 ==========
+function checkFinalAnswer() {
+    const input = document.getElementById('finalInput');
+    const result = document.getElementById('finalResult');
+    const error = document.getElementById('finalError');
+    const value = input.value.trim();
+
+    if (value === '5月29日') {
+        result.style.display = 'block';
+        error.style.display = 'none';
+        result.innerHTML = '2026年农历八月初四，祝你20岁生日快乐。<br>新的一岁，希望你保持<span class="keyword">身体健康</span>，<span class="keyword">吃嘛嘛香</span>，<span class="keyword">天天开心</span>，小人渣男退退退，考试过过过，多多多赚钱！<br>让你不开心的人白理，少容貌焦虑多欣赏自己的朋友圈好吗！<br>相信自己，你是最棒的[拳头]';
+    } else {
+        result.style.display = 'none';
+        error.style.display = 'block';
+    }
+}
+</script>
+</body>
+</html>
